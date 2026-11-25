@@ -107,11 +107,25 @@ def self_test():
     return 0
 
 
+def check_only():
+    """Validate ENTRY against the gate and report, without writing."""
+    error = check(ENTRY)
+    if error is not None:
+        print("check FAIL: %s" % error, file=sys.stderr)
+        return 1
+    data = ENTRY.encode("utf-8")
+    print("check ok: %r is %d chars / %d bytes, inside the 1-99 gate"
+          % (ENTRY, len(ENTRY), len(data)))
+    return 0
+
+
 def main(argv):
     if len(argv) > 1 and argv[1] == "--self-test":
         return self_test()
+    if len(argv) > 1 and argv[1] == "--check":
+        return check_only()
     if len(argv) > 1:
-        print("usage: main.py [--self-test]", file=sys.stderr)
+        print("usage: main.py [--check|--self-test]", file=sys.stderr)
         return 2
     text = validate(ENTRY)
     data = text.encode("utf-8")
